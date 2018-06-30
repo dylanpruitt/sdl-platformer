@@ -12,7 +12,7 @@ SDL_Surface *load_image( std::string filename )
 
     if( loadedImage != NULL )
     {
-        optimizedImage = SDL_DisplayFormat( loadedImage );
+        optimizedImage = SDL_DisplayFormatAlpha ( loadedImage );
 
         SDL_FreeSurface( loadedImage );
     }

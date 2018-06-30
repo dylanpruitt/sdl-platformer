@@ -63,6 +63,8 @@ int main( int argc, char* args[] )
 
     for (int i = 0; i < 100; i++) {
 
+        GraphicFunctions::apply_surface (32 * (i % TILEMAP_LENGTH), 32 * (i / TILEMAP_LENGTH), tiles[tileArray [3]].image, screen);
+
         GraphicFunctions::apply_surface (32 * (i % TILEMAP_LENGTH), 32 * (i / TILEMAP_LENGTH), tiles[tileArray [i]].image, screen);
 
     }
