@@ -33,9 +33,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="include/Entity.h" />
 		<Unit filename="include/GraphicFunctions.h" />
 		<Unit filename="include/Tile.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/Entity.cpp" />
 		<Unit filename="src/GraphicFunctions.cpp" />
 		<Unit filename="src/Tile.cpp" />
 		<Extensions>

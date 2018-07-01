@@ -20,14 +20,17 @@
 	"SDL/SDL_image.h"
 	<string>
 
-1530327573 source:c:\users\dylan\desktop\platformer\platformer\main.cpp
+1530471825 source:c:\users\dylan\desktop\platformer\platformer\main.cpp
 	"SDL/SDL.h"
 	"SDL/SDL_image.h"
 	<string>
 	<vector>
+	<math.h>
+	<iostream>
 	"Tile.h"
+	"Entity.h"
 
-1530325340 c:\users\dylan\desktop\platformer\platformer\include\tile.h
+1530425744 c:\users\dylan\desktop\platformer\platformer\include\tile.h
 	"GraphicFunctions.h"
 
 1530324852 c:\users\dylan\desktop\platformer\platformer\include\graphicfunctions.h
@@ -40,4 +43,10 @@
 
 1530325334 source:c:\users\dylan\desktop\platformer\platformer\src\tile.cpp
 	"Tile.h"
+
+1530381897 source:c:\users\dylan\desktop\platformer\platformer\src\entity.cpp
+	"Entity.h"
+
+1530470771 c:\users\dylan\desktop\platformer\platformer\include\entity.h
+	"GraphicFunctions.h"
 

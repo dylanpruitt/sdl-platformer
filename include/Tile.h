@@ -12,7 +12,7 @@ class Tile
 
         SDL_Surface* image = NULL;
 
-        bool isCollidable;
+        bool isCollidable = true;
 
     protected:
 
