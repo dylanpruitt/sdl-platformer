@@ -10,14 +10,17 @@ class Entity
         Entity (std::string imageFileName);
         virtual ~Entity();
 
-        int Health;
-        int MaxHealth;
+        int Health = 1;
+        int MaxHealth = 1;
+
+        int xSize = 16;
+        int ySize = 16;
 
         int xPosition = 0;
         int yPosition = 0;
 
-        int xVelocity = 0;
-        int yVelocity = 0;
+        double xVelocity = 0;
+        double yVelocity = 0;
 
         int xAcceleration = 0;
         int yAcceleration = 0;

@@ -31,8 +31,8 @@ bool isEntityCollidingWithTile (Entity entity, int tileArray [TILEMAP_LENGTH * T
 
     for (int i = 0; i < TILEMAP_LENGTH * TILEMAP_LENGTH; i++) {
 
-        if (entity.xPosition+32 >= (i % TILEMAP_LENGTH)*32 && entity.xPosition <= ((i % TILEMAP_LENGTH)+1)*32
-            && entity.yPosition+32 >= (i / TILEMAP_LENGTH)*32 && entity.yPosition <= ((i / TILEMAP_LENGTH)+1)*32) {
+        if (entity.xPosition+entity.xSize >= (i % TILEMAP_LENGTH)*32 + 1 && entity.xPosition <= ((i % TILEMAP_LENGTH)+1)*32
+            && entity.yPosition+entity.ySize >= (i / TILEMAP_LENGTH)*32 && entity.yPosition <= ((i / TILEMAP_LENGTH)+1)*32) {
 
 
             if (tiles [tileArray [i]].isCollidable) {
@@ -46,6 +46,39 @@ bool isEntityCollidingWithTile (Entity entity, int tileArray [TILEMAP_LENGTH * T
     }
 
     return false;
+
+}
+
+std::vector <int> returnIndicesOfAllTilesEntityIsIn (Entity entity, int tileArray [TILEMAP_LENGTH * TILEMAP_LENGTH], std::vector <Tile> tiles) {
+
+    std::vector <int> tileIndices;
+
+    for (int i = 0; i < TILEMAP_LENGTH * TILEMAP_LENGTH; i++) {
+
+        if (entity.xPosition+entity.xSize >= (i % TILEMAP_LENGTH)*32 && entity.xPosition <= (i % TILEMAP_LENGTH + 1) * 32
+            && entity.yPosition+entity.ySize >= (i / TILEMAP_LENGTH)*32+1 && entity.yPosition <= ((i / TILEMAP_LENGTH)+1)*32) {
+
+            tileIndices.push_back (i);
+
+        }
+
+    }
+
+    return tileIndices;
+
+}
+
+bool isEntityCollidingWithTileOnLeftOrRight (Entity entity, int tileArray [TILEMAP_LENGTH * TILEMAP_LENGTH], std::vector <Tile> tiles, std::vector <int> tileIndices) {
+
+    for (unsigned int i = 0; i < tileIndices.size (); i++) {
+
+        if (tiles [tileArray [tileIndices [i]]].isCollidable) {
+
+            return true;
+
+        }
+
+    }
 
 }
 
@@ -68,7 +101,7 @@ int main( int argc, char* args[] )
 
     SDL_WM_SetCaption( "SDL Platformer", NULL);
 
-    Entity player ("test.png");
+    Entity player ("teatest.png"); player.Health = 3;
 
     std::vector<Tile> tiles;
 
@@ -84,11 +117,11 @@ int main( int argc, char* args[] )
     int tileArray [TILEMAP_LENGTH * TILEMAP_LENGTH] =
                           { 3,3,3,3,3,3,3,3,3,3,
                             3,3,3,3,3,3,3,4,5,3,
-                            3,3,3,3,3,3,3,3,3,3,
-                            3,3,3,3,3,3,3,3,3,3,
-                            3,3,3,3,3,3,3,3,3,3,
-                            6,7,6,7,6,7,6,7,6,7,
-                            0,0,0,0,0,0,0,0,0,0,
+                            3,3,3,3,3,3,0,3,3,3,
+                            3,3,3,3,3,3,6,3,3,7,
+                            6,3,3,3,3,3,0,3,3,0,
+                            0,7,6,7,6,7,3,7,6,2,
+                            2,0,0,0,0,0,0,0,0,2,
                             1,2,1,2,1,2,1,2,1,2,
                             1,2,1,2,1,2,1,2,1,2,
                             1,2,1,2,1,2,1,2,1,2
@@ -111,7 +144,7 @@ int main( int argc, char* args[] )
                 switch( event.key.keysym.sym ) {
 
                     case SDLK_UP: { SDL_WM_SetCaption( "SDL Platformer - Pressing Up!", NULL);
-                        if (isEntityCollidingWithTile (player, tileArray, tiles)) { player.yVelocity -= 14; } } break;
+                        if (isEntityCollidingWithTile (player, tileArray, tiles)) { player.yVelocity -= 10; } } break;
 
 
                     default: break;
@@ -132,13 +165,29 @@ int main( int argc, char* args[] )
 
             if ( keysHeld[SDLK_LEFT] ) {
 
-            player.xPosition -= 3;
+                if (player.xVelocity > 0) {
+
+                    player.xVelocity -= 0.75;
+
+                } else {
+
+                    player.xVelocity -= 0.15;
+
+                }
 
             }
 
             if ( keysHeld[SDLK_RIGHT] ) {
 
-            player.xPosition += 3;
+                if (player.xVelocity < 0) {
+
+                    player.xVelocity += 0.75;
+
+                } else {
+
+                    player.xVelocity += 0.15;
+
+                }
 
             }
 
@@ -168,15 +217,64 @@ int main( int argc, char* args[] )
 
             if (isEntityCollidingWithTile (player, tileArray, tiles)) {
 
-                int displacement = player.yPosition % 32;
+                if (player.yVelocity > 0) {
 
-                player.yPosition -= displacement;
+                    int displacement = player.yPosition % (32 - player.ySize);
+
+                    player.yPosition -= displacement;
+
+                    player.yVelocity = 0;
+
+                }
+
+                if (player.yVelocity < 0) {
+
+                    int displacement = 32 - (player.yPosition % 32);
+
+                    player.yPosition += displacement + 1;
+
+                    player.yVelocity = 0;
+
+                }
 
             } else {
 
                 player.yVelocity ++;
 
             }
+
+        }
+
+        player.xPosition += player.xVelocity;
+
+        if (isEntityCollidingWithTileOnLeftOrRight (player, tileArray, tiles, returnIndicesOfAllTilesEntityIsIn (player, tileArray, tiles))) {
+
+            if (player.xVelocity > 0) {
+
+                    int displacement = player.xPosition % (32 - player.xSize);
+
+                    player.xPosition -= displacement;
+
+                    player.xVelocity = 0;
+
+            }
+
+            if (player.xVelocity < 0) {
+
+                    int displacement = (32*player.xPosition/32 + 1) % (player.xPosition) + 1; std::cout << player.xPosition << " _ " << displacement << std::endl;
+
+                    player.xPosition += displacement;
+
+                    player.xVelocity = 0;
+
+            }
+
+        }
+
+        if ( !keysHeld[SDLK_LEFT] && !keysHeld[SDLK_RIGHT] && isEntityCollidingWithTile (player, tileArray, tiles)) {
+
+            if (player.xVelocity > 0) { player.xVelocity -= 0.75; }
+            if (player.xVelocity < 0) { player.xVelocity += 0.75; }
 
         }
 
