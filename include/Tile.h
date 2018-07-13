@@ -3,12 +3,11 @@
 
 #include "GraphicFunctions.h"
 
-class Tile
-{
+class Tile {
+
     public:
         Tile ();
         Tile (std::string imageFileName);
-        virtual ~Tile();
 
         SDL_Surface* image = NULL;
 
@@ -17,6 +16,7 @@ class Tile
     protected:
 
     private:
+
 };
 
 #endif // TILE_H

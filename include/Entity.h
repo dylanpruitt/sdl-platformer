@@ -22,9 +22,6 @@ class Entity
         double xVelocity = 0;
         double yVelocity = 0;
 
-        int xAcceleration = 0;
-        int yAcceleration = 0;
-
         int Weight;
 
         bool isExplodable = false;

@@ -2,12 +2,8 @@
 
 Tile::Tile () { }
 
-Tile::Tile(std::string imageFileName)
-{
-    this->image = GraphicFunctions::load_image (imageFileName);
-}
+Tile::Tile(std::string imageFileName) {
 
-Tile::~Tile()
-{
-    //dtor
+    this->image = GraphicFunctions::load_image (imageFileName);
+
 }

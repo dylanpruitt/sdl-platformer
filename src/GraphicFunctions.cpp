@@ -2,8 +2,8 @@
 
 namespace GraphicFunctions {
 
-SDL_Surface *load_image( std::string filename )
-{
+SDL_Surface *load_image( std::string filename ) {
+
     SDL_Surface* loadedImage = NULL;
 
     SDL_Surface* optimizedImage = NULL;
@@ -20,8 +20,8 @@ SDL_Surface *load_image( std::string filename )
     return optimizedImage;
 }
 
-void apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* destination )
-{
+void apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* destination ) {
+
     SDL_Rect offset;
 
     offset.x = x;
