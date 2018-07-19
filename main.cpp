@@ -8,9 +8,13 @@
 const int SCREEN_WIDTH = 320;
 const int SCREEN_HEIGHT = 320;
 const int SCREEN_BPP = 32;
-const int TILEMAP_LENGTH = 15;
 
 SDL_Event event;
+
+Renderer renderer;
+
+const int tileArraySize = renderer.TILEMAP_LENGTH * renderer.TILEMAP_HEIGHT;
+
 
 bool keysHeld [323] = {false};
 
@@ -24,12 +28,12 @@ void FreeAllTileSurfaces ( std::vector <Tile> tileset ) {
 
 }
 
-bool isEntityCollidingWithTile (Entity entity, int tileArray [TILEMAP_LENGTH * TILEMAP_LENGTH], std::vector <Tile> tiles) {
+bool isEntityCollidingWithTile (Entity entity, int tileArray [tileArraySize], std::vector <Tile> tiles) {
 
-    for (int i = 0; i < TILEMAP_LENGTH * TILEMAP_LENGTH; i++) {
+    for (int i = 0; i < renderer.TILEMAP_LENGTH * renderer.TILEMAP_HEIGHT; i++) {
 
-        if (entity.xPosition+entity.xSize >= (i % TILEMAP_LENGTH)*32 + 1 && entity.xPosition <= ((i % TILEMAP_LENGTH)+1)*32
-            && entity.yPosition+entity.ySize >= (i / TILEMAP_LENGTH)*32 && entity.yPosition <= ((i / TILEMAP_LENGTH)+1)*32) {
+        if (entity.xPosition+entity.xSize > (i % renderer.TILEMAP_LENGTH)*32 && entity.xPosition <= ((i % renderer.TILEMAP_LENGTH)+1)*32
+            && entity.yPosition+entity.ySize > (i / renderer.TILEMAP_HEIGHT)*32 && entity.yPosition < ((i / renderer.TILEMAP_HEIGHT)+1)*32) {
 
 
             if (tiles [tileArray [i]].isCollidable) {
@@ -46,14 +50,38 @@ bool isEntityCollidingWithTile (Entity entity, int tileArray [TILEMAP_LENGTH * T
 
 }
 
-std::vector <int> returnIndicesOfAllTilesEntityIsIn (Entity entity, int tileArray [TILEMAP_LENGTH * TILEMAP_LENGTH], std::vector <Tile> tiles) {
+bool isOnGround (Entity entity, int tileArray [tileArraySize], std::vector <Tile> tiles) {
+
+     for (int i = 0; i < renderer.TILEMAP_LENGTH * renderer.TILEMAP_HEIGHT; i++) {
+
+        int minimumBoundYCoordinate = entity.yPosition+entity.ySize-(entity.ySize / 4);
+
+        if (entity.xPosition+entity.xSize > (i % renderer.TILEMAP_LENGTH)*32 && entity.xPosition <= ((i % renderer.TILEMAP_LENGTH)+1)*32
+            &&  minimumBoundYCoordinate + (entity.ySize / 4) >= (i / renderer.TILEMAP_HEIGHT)*32 && minimumBoundYCoordinate <= ((i / renderer.TILEMAP_HEIGHT)+1)*32) {
+
+
+            if (tiles [tileArray [i]].isCollidable) {
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+    return false;
+
+}
+
+std::vector <int> returnIndicesOfAllTilesEntityIsIn (Entity entity, int tileArray [tileArraySize], std::vector <Tile> tiles) {
 
     std::vector <int> tileIndices;
 
-    for (int i = 0; i < TILEMAP_LENGTH * TILEMAP_LENGTH; i++) {
+    for (int i = 0; i < renderer.TILEMAP_LENGTH * renderer.TILEMAP_HEIGHT; i++) {
 
-        if (entity.xPosition+entity.xSize >= (i % TILEMAP_LENGTH)*32 && entity.xPosition <= (i % TILEMAP_LENGTH + 1) * 32
-            && entity.yPosition+entity.ySize >= (i / TILEMAP_LENGTH)*32+1 && entity.yPosition <= ((i / TILEMAP_LENGTH)+1)*32) {
+        if (entity.xPosition+entity.xSize > (i % renderer.TILEMAP_LENGTH)*32 && entity.xPosition < (i % renderer.TILEMAP_LENGTH + 1) * 32
+            && entity.yPosition+entity.ySize > (i / renderer.TILEMAP_HEIGHT)*32 && entity.yPosition < ((i / renderer.TILEMAP_HEIGHT)+1)*32) {
 
             tileIndices.push_back (i);
 
@@ -65,7 +93,7 @@ std::vector <int> returnIndicesOfAllTilesEntityIsIn (Entity entity, int tileArra
 
 }
 
-bool isEntityCollidingWithTileOnLeftOrRight (Entity entity, int tileArray [TILEMAP_LENGTH * TILEMAP_LENGTH], std::vector <Tile> tiles, std::vector <int> tileIndices) {
+bool isEntityCollidingWithTileOnLeftOrRight (Entity entity, int tileArray [tileArraySize], std::vector <Tile> tiles, std::vector <int> tileIndices) {
 
     for (unsigned int i = 0; i < tileIndices.size (); i++) {
 
@@ -79,7 +107,7 @@ bool isEntityCollidingWithTileOnLeftOrRight (Entity entity, int tileArray [TILEM
 
 }
 
-void shiftCameraBasedOnPlayerPosition (Entity player, Renderer &renderer) {
+void shiftCameraBasedOnPlayerPosition (Entity player) {
 
     int playerXPositionOnScreen, playerYPositionOnScreen;
 
@@ -117,10 +145,15 @@ void shiftCameraBasedOnPlayerPosition (Entity player, Renderer &renderer) {
 
 }
 
+void shiftCamera (int x, int y) {
+
+    renderer.cameraXOffset += x;
+    renderer.cameraYOffset += y;
+
+}
+
 int main( int argc, char* args[] )
 {
-
-    Renderer renderer;
 
     bool quit = false;
 
@@ -151,8 +184,12 @@ int main( int argc, char* args[] )
     Tile foilage ("foilage1.png"); foilage.isCollidable = false; tiles.push_back (foilage);
     Tile alt_foilage ("foilage2.png"); alt_foilage.isCollidable = false; tiles.push_back (alt_foilage);
     Tile cave_background ("cave_background.png"); cave_background.isCollidable = false; tiles.push_back (cave_background);
+    Tile cave_background_2 ("cave_background_2.png"); cave_background_2.isCollidable = false; tiles.push_back (cave_background_2);
+    Tile cave_background_3 ("cave_background_3.png"); cave_background_3.isCollidable = false; tiles.push_back (cave_background_3);
+    Tile cave_background_4 ("cave_background_4.png"); cave_background_4.isCollidable = false; tiles.push_back (cave_background_4);
 
-    int tileArray [TILEMAP_LENGTH * TILEMAP_LENGTH] =
+
+    int tileArray [tileArraySize] =
                           { 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
                             3,3,3,3,3,3,3,4,5,3,3,3,3,3,3,
                             3,3,3,3,3,3,0,3,3,3,3,3,3,3,3,
@@ -164,9 +201,9 @@ int main( int argc, char* args[] )
                             1,2,1,2,1,2,1,2,1,2,3,3,3,3,3,
                             1,2,1,2,1,2,1,2,1,2,3,3,3,3,3,
                             1,2,1,8,8,8,8,8,8,8,3,3,3,3,3,
-                            1,8,8,8,8,8,8,8,8,3,4,5,3,3,0,
-                            1,2,1,8,8,8,8,8,8,3,3,3,3,3,1,
-                            1,2,1,2,1,2,1,8,8,3,3,3,0,0,1,
+                            1,8,8,8,8,8,8,8,8,9,4,5,3,3,0,
+                            1,2,1,8,8,8,8,8,10,3,3,3,3,3,1,
+                            1,2,1,2,1,2,1,8,11,3,3,3,0,0,1,
                             1,2,1,2,1,2,1,2,0,0,0,0,1,2,1,
                           };
 
@@ -187,7 +224,7 @@ int main( int argc, char* args[] )
                 switch( event.key.keysym.sym ) {
 
                     case SDLK_UP: { SDL_WM_SetCaption( "SDL Platformer - Pressing Up!", NULL);
-                        if (isEntityCollidingWithTile (player, tileArray, tiles)) { player.yVelocity -= 10; } } break;
+                        if (player.isOnGround (tileArray, tiles)) { player.yVelocity -= 10; } } break;
 
 
                     default: break;
@@ -246,40 +283,6 @@ int main( int argc, char* args[] )
 
         SDL_FillRect(renderer.screen, NULL, SDL_MapRGB(renderer.screen->format, 0, 0, 0));
 
-        if (!isEntityCollidingWithTile (player, tileArray, tiles) || player.yVelocity != 0) {
-
-            player.yPosition += player.yVelocity;
-
-            if (isEntityCollidingWithTile (player, tileArray, tiles)) {
-
-                if (player.yVelocity > 0) {
-
-                    int displacement = player.yPosition % (32 - player.ySize);
-
-                    player.yPosition -= displacement;
-
-                    player.yVelocity = 0;
-
-                }
-
-                if (player.yVelocity < 0) {
-
-                    int displacement = 32 - (player.yPosition % 32);
-
-                    player.yPosition += displacement + 1;
-
-                    player.yVelocity = 0;
-
-                }
-
-            } else {
-
-                player.yVelocity ++;
-
-            }
-
-        }
-
         player.xPosition += player.xVelocity;
 
         if (isEntityCollidingWithTileOnLeftOrRight (player, tileArray, tiles, returnIndicesOfAllTilesEntityIsIn (player, tileArray, tiles))) {
@@ -296,7 +299,7 @@ int main( int argc, char* args[] )
 
             if (player.xVelocity < 0) {
 
-                    int displacement = (32*player.xPosition/32 + 1) % (player.xPosition) + 1; std::cout << player.xPosition << " _ " << displacement << std::endl;
+                    int displacement = (32*player.xPosition/32 + 1) % (player.xPosition) + 1;
 
                     player.xPosition += displacement;
 
@@ -306,7 +309,53 @@ int main( int argc, char* args[] )
 
         }
 
-        if ( !keysHeld[SDLK_LEFT] && !keysHeld[SDLK_RIGHT] && isEntityCollidingWithTile (player, tileArray, tiles)) {
+        if (!isEntityCollidingWithTile (player, tileArray, tiles) || player.yVelocity != 0) {
+
+            player.yPosition += player.yVelocity;
+
+            if (player.isOnGround (tileArray, tiles)) {
+
+                    std::cout << player.yPosition << " : " << player.yVelocity << std::endl;
+
+                    int displacement = player.yPosition % (32 - player.ySize);
+
+                    player.yPosition -= displacement;
+
+                    if (isEntityCollidingWithTile (player, tileArray, tiles)) {
+
+                        std::cout << "Resolving: " << player.yPosition << " : " << player.yVelocity << std::endl;
+
+                        player.yPosition -= player.yVelocity - (player.yVelocity - player.ySize);
+
+                        shiftCamera (0, -1 * displacement);
+
+                    }
+
+                    player.yVelocity = 0;
+
+            }
+
+            if (isEntityCollidingWithTile (player, tileArray, tiles)) {
+
+                if (player.yVelocity < 0) {
+
+                    int displacement = 32 - (player.yPosition % 32);
+
+                    player.yPosition += displacement;
+
+                    player.yVelocity = 0;
+
+                }
+
+            } else {
+
+                player.yVelocity ++;
+
+            }
+
+        }
+
+        if ( !keysHeld[SDLK_LEFT] && !keysHeld[SDLK_RIGHT] && player.isOnGround (tileArray, tiles)) {
 
             if (player.xVelocity > 0) { player.xVelocity -= 0.75; }
             if (player.xVelocity < 0) { player.xVelocity += 0.75; }
@@ -315,7 +364,7 @@ int main( int argc, char* args[] )
 
         if (player.xPosition < 0) { player.xPosition = 0; }
 
-        shiftCameraBasedOnPlayerPosition (player, renderer);
+        shiftCameraBasedOnPlayerPosition (player);
 
     }
 

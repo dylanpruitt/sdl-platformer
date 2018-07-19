@@ -1,7 +1,11 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "GraphicFunctions.h"
+#include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
+#include "Tile.h"
+#include <string>
+#include <vector>
 
 class Entity
 {
@@ -27,7 +31,11 @@ class Entity
         bool isExplodable = false;
         bool isStaticObject = false;
 
+        static const int tileArraySize = 225;
+
         SDL_Surface* image = NULL;
+
+        bool isOnGround (int tileArray [tileArraySize], std::vector <Tile> tiles);
 
     protected:
 
