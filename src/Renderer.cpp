@@ -1,16 +1,22 @@
 #include "Renderer.h"
 
-void Renderer::render (Entity player, int tileArray [TILEMAP_LENGTH * TILEMAP_HEIGHT], std::vector <Tile> tiles) {
+void Renderer::render (Entity player,
+                       Map worldmap) {
 
-        for (int i = 0; i < TILEMAP_LENGTH * TILEMAP_HEIGHT; i++) {
+        for (unsigned int i = 0; i < worldmap.tileArray.size (); i++) {
 
-            GraphicFunctions::apply_surface (32 * (i % TILEMAP_LENGTH) - cameraXOffset, 32 * (i / TILEMAP_HEIGHT) - cameraYOffset, tiles[tileArray [BACKGROUND_INDEX]].image, screen);
+            GraphicFunctions::apply_surface (32 * (i % worldmap.tilemapLengthInTiles) - worldmap.cameraXOffset,
+                                             32 * (i / worldmap.tilemapHeightInTiles) - worldmap.cameraYOffset,
+                                             worldmap.tiles[worldmap.backgroundTileArray [i]].image,
+                                             screen);
 
-            GraphicFunctions::apply_surface (32 * (i % TILEMAP_LENGTH) - cameraXOffset, 32 * (i / TILEMAP_HEIGHT) - cameraYOffset, tiles[tileArray [i]].image, screen);
+            GraphicFunctions::apply_surface (32 * (i % worldmap.tilemapLengthInTiles) - worldmap.cameraXOffset,
+                                             32 * (i / worldmap.tilemapHeightInTiles) - worldmap.cameraYOffset,
+                                             worldmap.tiles[worldmap.tileArray [i]].image, screen);
 
         }
 
-        GraphicFunctions::apply_surface (player.xPosition - cameraXOffset, player.yPosition - cameraYOffset, player.image, screen);
+        GraphicFunctions::apply_surface (player.xPosition - worldmap.cameraXOffset, player.yPosition - worldmap.cameraYOffset, player.image, screen);
 
 }
 

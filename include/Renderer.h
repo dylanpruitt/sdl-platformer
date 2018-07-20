@@ -14,15 +14,11 @@ class Renderer
         const int BACKGROUND_INDEX = 3;
 
     public:
-        int cameraXOffset = 0;
-        int cameraYOffset = 0;
-
-        static const int TILEMAP_LENGTH = 15;
-        static const int TILEMAP_HEIGHT = 15;
 
         SDL_Surface *screen = NULL;
 
-        void render (Entity player, int tileArray [TILEMAP_LENGTH * TILEMAP_HEIGHT], std::vector <Tile> tiles);
+        void render (Entity player,
+                     Map worldmap);
 
         Renderer ();
 
