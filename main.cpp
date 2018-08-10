@@ -135,41 +135,15 @@ void loadMap (std::string filename, Map &worldmap) {
 
         }
 
+        int temp_int;
+
+        file >> worldmap.playerXOffset;
+        file >> worldmap.playerYOffset;
+
         file.close();
 
     } else std::cout << "Unable to open file";
 
-}
-
-void saveMap (std::string filename, Map worldmap) {
-
-    std::string line;
-    std::ofstream file (filename.c_str ());
-
-    if (file.is_open()) {
-
-        file << tileArraySize << "\n";
-
-        file << worldmap.tiles.size () << "\n";
-
-        for (int i = 0; i < worldmap.tiles.size (); i++ ) {
-
-            /// // // file << tiles[i].imageFileName << "\n";
-            file << worldmap.tiles[i].isCollidable << "\n";
-
-        }
-
-
-        for (int i = 0; i < tileArraySize; i++) {
-
-            file << worldmap.tileArray [i] << "\n";
-            file << worldmap.backgroundTileArray [i] << "\n";
-
-        }
-
-        file.close();
-
-    }
 }
 
 int main( int argc, char* args[] )
@@ -193,7 +167,7 @@ int main( int argc, char* args[] )
 
     Entity player ("teatest.png"); player.Health = 3;
 
-    loadMap ("hills_01.map", worldmap);
+    loadMap ("hills_01.map", worldmap); player.xPosition = worldmap.playerXOffset; player.yPosition = worldmap.playerYOffset;
 
      while( quit == false ) {
 

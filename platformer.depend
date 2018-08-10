@@ -20,7 +20,7 @@
 	"SDL/SDL_image.h"
 	<string>
 
-1532020757 source:c:\users\dylan\desktop\platformer\platformer\main.cpp
+1533884524 source:c:\users\dylan\desktop\platformer\platformer\main.cpp
 	<string>
 	<math.h>
 	<fstream>
@@ -46,7 +46,7 @@
 1532019497 source:c:\users\dylan\desktop\platformer\platformer\src\entity.cpp
 	"Entity.h"
 
-1532019027 c:\users\dylan\desktop\platformer\platformer\include\entity.h
+1533884018 c:\users\dylan\desktop\platformer\platformer\include\entity.h
 	"SDL/SDL.h"
 	"SDL/SDL_image.h"
 	"Map.h"
@@ -57,7 +57,7 @@
 1532019752 source:c:\users\dylan\desktop\platformer\platformer\src\renderer.cpp
 	"Renderer.h"
 
-1532018791 c:\users\dylan\desktop\platformer\platformer\include\renderer.h
+1532980041 c:\users\dylan\desktop\platformer\platformer\include\renderer.h
 	"Entity.h"
 	"SDL/SDL.h"
 	"SDL/SDL_image.h"
@@ -65,7 +65,7 @@
 	<string>
 	<vector>
 
-1532018911 c:\users\dylan\desktop\platformer\platformer\include\map.h
+1533884508 c:\users\dylan\desktop\platformer\platformer\include\map.h
 	"Tile.h"
 	<vector>
 

@@ -16,6 +16,8 @@ class Map
         int cameraXOffset = 0;
         int cameraYOffset = 0;
 
+        int playerXOffset = 0;
+        int playerYOffset = 0;
 
         std::vector<Tile> tiles;
 

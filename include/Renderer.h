@@ -10,8 +10,6 @@
 
 class Renderer
 {
-    private:
-        const int BACKGROUND_INDEX = 3;
 
     public:
 
