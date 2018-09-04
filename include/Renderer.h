@@ -15,7 +15,7 @@ class Renderer
 
         SDL_Surface *screen = NULL;
 
-        void render (Entity player,
+        void render (std::vector <Entity> Entities,
                      Map worldmap);
 
         Renderer ();

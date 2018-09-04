@@ -18,6 +18,7 @@ Renderer renderer;
 
 int tileArraySize = worldmap.tilemapLengthInTiles * worldmap.tilemapHeightInTiles;
 
+std::vector <Entity> Entities;
 
 bool keysHeld [323] = {false};
 
@@ -146,6 +147,122 @@ void loadMap (std::string filename, Map &worldmap) {
 
 }
 
+void updateEntityPosition (Entity &entity) {
+
+        for (int i = 0; i < abs (entity.xVelocity); i++) {
+
+            if (entity.xVelocity > 0) {
+
+                entity.xPosition++;
+
+                if (entity.isCollidingWithTileOnRight (worldmap)) {
+
+                    int displacement = entity.xPosition % (32 - entity.xSize);
+
+                    entity.xPosition -= displacement;
+
+                    entity.xVelocity = 0;
+
+                    break;
+
+                }
+
+            } else if (entity.xVelocity < 0) {
+
+                entity.xPosition--;
+
+                if (entity.isCollidingWithTileOnLeft (worldmap)) {
+
+                    int displacement = (32*entity.xPosition/32 + 1) % entity.xPosition;
+
+                    entity.xPosition += displacement;
+
+                    entity.xVelocity = 0;
+
+                    break;
+
+                }
+
+            } else {
+
+                break;
+
+            }
+
+        }
+
+
+        if (!isEntityCollidingWithTile (entity, worldmap) || entity.yVelocity != 0) {
+
+                entity.yPosition += entity.yVelocity;
+
+                if (entity.isOnGround (worldmap)) {
+
+                        std::cout << entity.yPosition << " : " << entity.yVelocity << std::endl;
+
+                        int displacement = entity.yPosition % (32 - entity.ySize);
+
+                        entity.yPosition -= displacement;
+
+                        if (isEntityCollidingWithTile (entity, worldmap)) {
+
+                            std::cout << "Resolving: " << entity.yPosition << " : " << entity.yVelocity << std::endl;
+
+                            entity.yPosition -= entity.yVelocity - (entity.yVelocity - entity.ySize);
+
+                            shiftCamera (0, -1 * displacement);
+
+                        }
+
+                        entity.yVelocity = 0;
+
+                }
+
+                if (entity.isCollidingWithTileFromBelow (worldmap)) {
+
+                    int displacement = 32 - (entity.yPosition % 32);
+
+                    entity.yPosition += displacement;
+
+                    entity.yVelocity = 0;
+
+                } else {
+
+                    entity.yVelocity ++;
+
+                }
+
+            }
+
+}
+
+void updateAllEntityPositions (std::vector <Entity> &Entities) {
+
+    for (unsigned int i = 0; i < Entities.size (); i++) {
+
+        updateEntityPosition (Entities [i]);
+
+    }
+
+}
+
+bool twoEntitiesAreColliding (Entity entity_one, Entity entity_two) {
+
+    if (entity_one.xPosition+entity_one.xSize > entity_two.xPosition
+        && entity_one.xPosition <= entity_two.xPosition+entity_two.xSize
+        && entity_one.yPosition+entity_one.ySize > entity_two.yPosition
+        && entity_one.yPosition < entity_two.yPosition+entity_two.ySize) {
+
+        return true;
+
+    } else {
+
+        return false;
+
+    }
+
+}
+
 int main( int argc, char* args[] )
 {
 
@@ -165,7 +282,9 @@ int main( int argc, char* args[] )
 
     SDL_WM_SetCaption( "SDL Platformer", NULL);
 
-    Entity player ("teatest.png"); player.Health = 3;
+    Entity player ("teatest.png"); player.Health = 3; Entities.push_back (player);
+
+    Entity crate ("crate.png"); crate.xPosition = 32; crate.yPosition = 32; crate.xVelocity = 16.00; Entities.push_back (crate);
 
     loadMap ("hills_01.map", worldmap); player.xPosition = worldmap.playerXOffset; player.yPosition = worldmap.playerYOffset;
 
@@ -186,7 +305,7 @@ int main( int argc, char* args[] )
                 switch( event.key.keysym.sym ) {
 
                     case SDLK_UP: { SDL_WM_SetCaption( "SDL Platformer - Pressing Up!", NULL);
-                        if (player.isOnGround (worldmap)) { player.yVelocity -= 10; } } break;
+                        if (Entities [0].isOnGround (worldmap)) { Entities [0].yVelocity -= 10; } } break;
 
 
                     default: break;
@@ -207,13 +326,13 @@ int main( int argc, char* args[] )
 
         if ( keysHeld[SDLK_LEFT] ) {
 
-            if (player.xVelocity > 0) {
+            if (Entities [0].xVelocity > 0) {
 
-                player.xVelocity -= 0.75;
+                Entities [0].xVelocity -= 0.75;
 
             } else {
 
-                player.xVelocity -= 0.15;
+                Entities [0].xVelocity -= 0.15;
 
             }
 
@@ -221,13 +340,13 @@ int main( int argc, char* args[] )
 
         if ( keysHeld[SDLK_RIGHT] ) {
 
-            if (player.xVelocity < 0) {
+            if (Entities [0].xVelocity < 0) {
 
-                player.xVelocity += 0.75;
+                Entities [0].xVelocity += 0.75;
 
             } else {
 
-                player.xVelocity += 0.15;
+                Entities [0].xVelocity += 0.15;
 
             }
 
@@ -235,7 +354,7 @@ int main( int argc, char* args[] )
 
         SDL_Delay (50);
 
-        renderer.render (player, worldmap);
+        renderer.render (Entities, worldmap);
 
         if( SDL_Flip( renderer.screen ) == -1 ) {
 
@@ -245,100 +364,28 @@ int main( int argc, char* args[] )
 
         SDL_FillRect(renderer.screen, NULL, SDL_MapRGB(renderer.screen->format, 0, 0, 0));
 
-        for (int i = 0; i < abs (player.xVelocity); i++) {
+        updateAllEntityPositions (Entities);
 
-            if (player.xVelocity > 0) {
+        if (twoEntitiesAreColliding (Entities [0], Entities [1])) {
 
-                player.xPosition++;
+            if (Entities [0].xVelocity > 5.00) {  Entities [0].xVelocity --; }
 
-                if (player.isCollidingWithTileOnRight (worldmap)) {
+            Entities [1].xPosition += Entities [0].xVelocity / 2;
 
-                    int displacement = player.xPosition % (32 - player.xSize);
-
-                    player.xPosition -= displacement;
-
-                    player.xVelocity = 0;
-
-                    break;
-
-                }
-
-            } else if (player.xVelocity < 0) {
-
-                player.xPosition--;
-
-                if (player.isCollidingWithTileOnLeft (worldmap)) {
-
-                    int displacement = (32*player.xPosition/32 + 1) % player.xPosition;
-
-                    player.xPosition += displacement;
-
-                    player.xVelocity = 0;
-
-                    break;
-
-                }
-
-            } else {
-
-                break;
-
-            }
+            Entities [0].xPosition = Entities [1].xPosition - Entities [0].xSize;
 
         }
 
-        if (!isEntityCollidingWithTile (player, worldmap) || player.yVelocity != 0) {
+        if ( !keysHeld[SDLK_LEFT] && !keysHeld[SDLK_RIGHT] && Entities [0].isOnGround (worldmap)) {
 
-                player.yPosition += player.yVelocity;
-
-                if (player.isOnGround (worldmap)) {
-
-                        std::cout << player.yPosition << " : " << player.yVelocity << std::endl;
-
-                        int displacement = player.yPosition % (32 - player.ySize);
-
-                        player.yPosition -= displacement;
-
-                        if (isEntityCollidingWithTile (player, worldmap)) {
-
-                            std::cout << "Resolving: " << player.yPosition << " : " << player.yVelocity << std::endl;
-
-                            player.yPosition -= player.yVelocity - (player.yVelocity - player.ySize);
-
-                            shiftCamera (0, -1 * displacement);
-
-                        }
-
-                        player.yVelocity = 0;
-
-                }
-
-                if (player.isCollidingWithTileFromBelow (worldmap)) {
-
-                    int displacement = 32 - (player.yPosition % 32);
-
-                    player.yPosition += displacement;
-
-                    player.yVelocity = 0;
-
-                } else {
-
-                    player.yVelocity ++;
-
-                }
-
-            }
-
-        if ( !keysHeld[SDLK_LEFT] && !keysHeld[SDLK_RIGHT] && player.isOnGround (worldmap)) {
-
-            if (player.xVelocity > 0) { player.xVelocity -= 0.75; }
-            if (player.xVelocity < 0) { player.xVelocity += 0.75; }
+            if (Entities [0].xVelocity > 0) { Entities [0].xVelocity -= 0.75; }
+            if (Entities [0].xVelocity < 0) { Entities [0].xVelocity += 0.75; }
 
         }
 
-        if (player.xPosition < 0) { player.xPosition = 0; }
+        if (Entities [0].xPosition < 0) { Entities [0].xPosition = 0; }
 
-        shiftCameraBasedOnPlayerPosition (player);
+        shiftCameraBasedOnPlayerPosition (Entities [0]);
 
     }
 

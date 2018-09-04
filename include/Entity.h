@@ -30,7 +30,7 @@ class Entity
         int Weight;
 
         bool isExplodable = false;
-        bool isStaticObject = false;
+        bool isMoveable = true;
 
         SDL_Surface* image = NULL;
 
