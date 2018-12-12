@@ -34,6 +34,10 @@ class Entity
 
         SDL_Surface* image = NULL;
 
+        void handleTileCollisions (Map worldmap);
+
+        bool isCollidingWithTile (Map worldmap);
+
         bool isOnGround (Map worldmap);
 
         bool isCollidingWithTileOnLeft (Map worldmap);

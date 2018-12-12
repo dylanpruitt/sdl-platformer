@@ -37,12 +37,12 @@ bool Entity::isCollidingWithTileFromBelow (Map worldmap) {
 
 }
 
-bool Entity::isCollidingWithTileOnLeft (Map worldmap) {
+bool Entity::isCollidingWithTile (Map worldmap) {
 
-     for (int i = 0; i < worldmap.tilemapLengthInTiles * worldmap.tilemapHeightInTiles; i++) {
+    for (int i = 0; i < worldmap.tilemapLengthInTiles * worldmap.tilemapHeightInTiles; i++) {
 
-        if (xPosition > (i % worldmap.tilemapLengthInTiles)*32 && xPosition <= ((i % worldmap.tilemapLengthInTiles)+1)*32
-            &&  yPosition+ySize > (i / worldmap.tilemapHeightInTiles)*32 && yPosition < ((i / worldmap.tilemapHeightInTiles)+1)*32) {
+        if (xPosition+xSize > (i % worldmap.tilemapLengthInTiles)*32 && xPosition <= ((i % worldmap.tilemapLengthInTiles)+1)*32
+            && yPosition+ySize > (i / worldmap.tilemapHeightInTiles)*32 && yPosition < ((i / worldmap.tilemapHeightInTiles)+1)*32) {
 
 
             if (worldmap.tiles [worldmap.tileArray [i]].isCollidable) {
@@ -59,27 +59,40 @@ bool Entity::isCollidingWithTileOnLeft (Map worldmap) {
 
 }
 
-bool Entity::isCollidingWithTileOnRight (Map worldmap) {
+void Entity::handleTileCollisions (Map worldmap) {
 
-     for (int i = 0; i < worldmap.tilemapLengthInTiles * worldmap.tilemapHeightInTiles; i++) {
+    while (isCollidingWithTile (worldmap)) {
 
-        int minimumBoundXCoordinate = xPosition+xSize-(xSize / 4);
+        for (int i = 0; i < worldmap.tilemapLengthInTiles * worldmap.tilemapHeightInTiles; i++) {
 
-        if (minimumBoundXCoordinate + (ySize / 4) > (i % worldmap.tilemapLengthInTiles)*32 && minimumBoundXCoordinate <= ((i % worldmap.tilemapLengthInTiles)+1)*32
-            &&  yPosition+ySize > (i / worldmap.tilemapHeightInTiles)*32 && yPosition < ((i / worldmap.tilemapHeightInTiles)+1)*32) {
+            if (xPosition >= (i % worldmap.tilemapLengthInTiles)*32 && xPosition <= ((i % worldmap.tilemapLengthInTiles)+1)*32
+                &&  yPosition+ySize > (i / worldmap.tilemapHeightInTiles)*32 && yPosition < ((i / worldmap.tilemapHeightInTiles)+1)*32) {
+
+                if (worldmap.tiles [worldmap.tileArray [i]].isCollidable) {
+
+                    xPosition++; xVelocity = 0;
+
+                }
+
+            }
+
+            int minimumBoundXCoordinate = xPosition+(xSize*3/4);
+
+            if (minimumBoundXCoordinate + (xSize / 4) > (i % worldmap.tilemapLengthInTiles)*32 && minimumBoundXCoordinate <= ((i % worldmap.tilemapLengthInTiles)+1)*32
+                &&  yPosition+ySize > (i / worldmap.tilemapHeightInTiles)*32 && yPosition < ((i / worldmap.tilemapHeightInTiles)+1)*32) {
 
 
-            if (worldmap.tiles [worldmap.tileArray [i]].isCollidable) {
+                if (worldmap.tiles [worldmap.tileArray [i]].isCollidable) {
 
-                return true;
+                    xPosition--; xVelocity = 0;
+
+                }
 
             }
 
         }
 
     }
-
-    return false;
 
 }
 

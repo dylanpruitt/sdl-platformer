@@ -149,47 +149,9 @@ void loadMap (std::string filename, Map &worldmap) {
 
 void updateEntityPosition (Entity &entity) {
 
-        for (int i = 0; i < abs (entity.xVelocity); i++) {
+        entity.xPosition += entity.xVelocity;
 
-            if (entity.xVelocity > 0) {
-
-                entity.xPosition++;
-
-                if (entity.isCollidingWithTileOnRight (worldmap)) {
-
-                    int displacement = entity.xPosition % (32 - entity.xSize);
-
-                    entity.xPosition -= displacement;
-
-                    entity.xVelocity = 0;
-
-                    break;
-
-                }
-
-            } else if (entity.xVelocity < 0) {
-
-                entity.xPosition--;
-
-                if (entity.isCollidingWithTileOnLeft (worldmap)) {
-
-                    int displacement = (32*entity.xPosition/32 + 1) % entity.xPosition;
-
-                    entity.xPosition += displacement;
-
-                    entity.xVelocity = 0;
-
-                    break;
-
-                }
-
-            } else {
-
-                break;
-
-            }
-
-        }
+        entity.handleTileCollisions (worldmap);
 
 
         if (!isEntityCollidingWithTile (entity, worldmap) || entity.yVelocity != 0) {
@@ -284,7 +246,7 @@ int main( int argc, char* args[] )
 
     Entity player ("teatest.png"); player.Health = 3; Entities.push_back (player);
 
-    Entity crate ("crate.png"); crate.xPosition = 32; crate.yPosition = 32; crate.xVelocity = 16.00; Entities.push_back (crate);
+    Entity crate ("crate.png"); crate.xPosition = 32; crate.yPosition = 32; crate.xVelocity = 4.00; Entities.push_back (crate);
 
     loadMap ("hills_01.map", worldmap); player.xPosition = worldmap.playerXOffset; player.yPosition = worldmap.playerYOffset;
 

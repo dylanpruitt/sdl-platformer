@@ -20,7 +20,7 @@
 	"SDL/SDL_image.h"
 	<string>
 
-1536074952 source:c:\users\dylan\desktop\platformer\platformer\main.cpp
+1544612214 source:c:\users\dylan\desktop\platformer\platformer\main.cpp
 	<string>
 	<math.h>
 	<fstream>
@@ -29,24 +29,24 @@
 	"SDL/SDL.h"
 	"SDL/SDL_image.h"
 
-1531975470 c:\users\dylan\desktop\platformer\platformer\include\tile.h
+1531971870 c:\users\dylan\desktop\platformer\platformer\include\tile.h
 	"GraphicFunctions.h"
 
-1530324852 c:\users\dylan\desktop\platformer\platformer\include\graphicfunctions.h
+1530321252 c:\users\dylan\desktop\platformer\platformer\include\graphicfunctions.h
 	"SDL/SDL.h"
 	"SDL/SDL_image.h"
 	<string>
 
-1531463438 source:c:\users\dylan\desktop\platformer\platformer\src\graphicfunctions.cpp
+1531459838 source:c:\users\dylan\desktop\platformer\platformer\src\graphicfunctions.cpp
 	"GraphicFunctions.h"
 
-1531975472 source:c:\users\dylan\desktop\platformer\platformer\src\tile.cpp
+1531971872 source:c:\users\dylan\desktop\platformer\platformer\src\tile.cpp
 	"Tile.h"
 
-1532019497 source:c:\users\dylan\desktop\platformer\platformer\src\entity.cpp
+1544612780 source:c:\users\dylan\desktop\platformer\platformer\src\entity.cpp
 	"Entity.h"
 
-1536073062 c:\users\dylan\desktop\platformer\platformer\include\entity.h
+1544611938 c:\users\dylan\desktop\platformer\platformer\include\entity.h
 	"SDL/SDL.h"
 	"SDL/SDL_image.h"
 	"Map.h"
@@ -54,10 +54,10 @@
 	<string>
 	<vector>
 
-1536073898 source:c:\users\dylan\desktop\platformer\platformer\src\renderer.cpp
+1536070298 source:c:\users\dylan\desktop\platformer\platformer\src\renderer.cpp
 	"Renderer.h"
 
-1536073828 c:\users\dylan\desktop\platformer\platformer\include\renderer.h
+1536070228 c:\users\dylan\desktop\platformer\platformer\include\renderer.h
 	"Entity.h"
 	"SDL/SDL.h"
 	"SDL/SDL_image.h"
@@ -65,10 +65,10 @@
 	<string>
 	<vector>
 
-1533884508 c:\users\dylan\desktop\platformer\platformer\include\map.h
+1533880908 c:\users\dylan\desktop\platformer\platformer\include\map.h
 	"Tile.h"
 	<vector>
 
-1532018180 source:c:\users\dylan\desktop\platformer\platformer\src\map.cpp
+1532014580 source:c:\users\dylan\desktop\platformer\platformer\src\map.cpp
 	"Map.h"
 
