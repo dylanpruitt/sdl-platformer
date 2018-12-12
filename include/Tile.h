@@ -13,6 +13,8 @@ class Tile {
 
         bool isCollidable = true;
 
+        bool isOnlyCollidableFromAbove = false;
+
     protected:
 
     private:

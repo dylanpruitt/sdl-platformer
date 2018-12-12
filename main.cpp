@@ -246,9 +246,8 @@ int main( int argc, char* args[] )
 
     Entity player ("teatest.png"); player.Health = 3; Entities.push_back (player);
 
-    Entity crate ("crate.png"); crate.xPosition = 32; crate.yPosition = 32; crate.xVelocity = 4.00; Entities.push_back (crate);
-
     loadMap ("hills_01.map", worldmap); player.xPosition = worldmap.playerXOffset; player.yPosition = worldmap.playerYOffset;
+    worldmap.tiles [12].isOnlyCollidableFromAbove = true;
 
     while( quit == false ) {
 
@@ -327,16 +326,6 @@ int main( int argc, char* args[] )
         SDL_FillRect(renderer.screen, NULL, SDL_MapRGB(renderer.screen->format, 0, 0, 0));
 
         updateAllEntityPositions (Entities);
-
-        if (twoEntitiesAreColliding (Entities [0], Entities [1])) {
-
-            if (Entities [0].xVelocity > 5.00) {  Entities [0].xVelocity --; }
-
-            Entities [1].xPosition += Entities [0].xVelocity / 2;
-
-            Entities [0].xPosition = Entities [1].xPosition - Entities [0].xSize;
-
-        }
 
         if ( !keysHeld[SDLK_LEFT] && !keysHeld[SDLK_RIGHT] && Entities [0].isOnGround (worldmap)) {
 

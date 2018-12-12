@@ -103,10 +103,11 @@ bool Entity::isOnGround (Map worldmap) {
         int minimumBoundYCoordinate = yPosition+ySize-(ySize / 4);
 
         if (xPosition+xSize > (i % worldmap.tilemapLengthInTiles)*32 && xPosition <= ((i % worldmap.tilemapLengthInTiles)+1)*32
-            &&  minimumBoundYCoordinate + (ySize / 4) >= (i / worldmap.tilemapHeightInTiles)*32 && minimumBoundYCoordinate <= ((i / worldmap.tilemapHeightInTiles)+1)*32) {
+            &&  yPosition+ySize >= (i / worldmap.tilemapHeightInTiles)*32 && minimumBoundYCoordinate <= (i / worldmap.tilemapHeightInTiles)*32 + 8
+            &&  yVelocity >= 0) {
 
 
-            if (worldmap.tiles [worldmap.tileArray [i]].isCollidable) {
+            if (worldmap.tiles [worldmap.tileArray [i]].isCollidable || worldmap.tiles [worldmap.tileArray [i]].isOnlyCollidableFromAbove) {
 
                 return true;
 
